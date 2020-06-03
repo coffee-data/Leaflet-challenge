@@ -1,24 +1,46 @@
+// Marker Size Funtion
+function markerSize(mag) {
+    return mag * 20000;
+};
+
 (async function(){
     earthquake_info = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
 
     const eqData = await d3.json(earthquake_info);
 
-    console.log(eqData.features[0].geometry.coordinates.slice(0,2));
+    console.log(eqData.features);
 
     // Define arrays to hold created city and state markers
     const eqMarkers = [];
 
     // Loop through locations and create city and state markers
     eqData.features.forEach(feature => {
-        // Setting the marker radius for the state by passing population into the markerSize function
         
+        // Set value for cleaner code
+        magnitude = feature.properties.mag;
+        
+        // Set color based on rules
+        let color = "";
+        if (magnitude >= 2.5 &&  magnitude <= 5.4) {
+            color = "yellow";
+        }
+        else if (magnitude >= 5.5 &&  magnitude <= 6.0) {
+            color = "orange";
+        }
+        else if (magnitude >= 6.1 &&  magnitude <= 6.9) {
+            color = "red";
+        }
+        else if (magnitude >= 7.0 &&  magnitude <= 7.9) {
+            color = "black";
+        }
+
         eqMarkers.push(
             L.circle(feature.geometry.coordinates.slice(0,2).reverse(), {    // THIS IS WHERE I LEFT OFF
             stroke: true,
-            fillOpacity: 0.75,
+            fillOpacity: 0.50,
             color: "white",
-            fillColor: "white",
-            radius: 100000
+            fillColor: color,
+            radius: markerSize(feature.properties.mag)
             })
         );
     });
